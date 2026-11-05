@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repuestos de bicicletas</title>
+    <link rel="stylesheet" href="bar-styles.css">
+</head>
+<body data-categoria="repuestos-bici">
+    <header class="barra-superior">
+        <h1>Repuestos de bicicletas</h1>
+        <div class="searcher">
+            <svg id="mg-glass" width="20" height="20" fill="#ffffff" viewBox="0 0 256.00098 256.00098" id="Flat" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M226.82129,221.17236,180.955,175.306a88.10138,88.10138,0,1,0-5.657,5.65649L221.165,226.82959a3.99992,3.99992,0,0,0,5.65625-5.65723ZM35.999,116a80,80,0,1,1,80,80A80.09041,80.09041,0,0,1,35.999,116Z"></path> </g></svg>
+            <input type="search" placeholder="Repuestos, marcas..." list="contenedor" class="input-search" id="srps">
+            <datalist id="contenedor">
+                <!-- CATEGORIAS GENERALES -->
+                <option value="Repuestos de motor"></option>
+                <option value="Accesorios y lujos"></option>
+                <option value="Sistema de frenos"></option>
+                <option value="Sistema electrico"></option>
+                <option value="Kit de arrastre y transmision"></option>
+                <option value="Cauchos y tripas"></option>
+                <option value="Aceites y fluidos"></option>
+                <option value="Subspension y amortiguacion"></option>
+                <option value="Plasticos y carroceria"></option>
+
+                <!-- MOTOR -->
+                <option value="Cilindro y kit de piston"></option>
+                <option value="Anillos de piston"></option>
+                <option value="Empacaduras de motor"></option>
+                <option value="Carburador"></option>
+                <option value="Valvulas de admision y escape"></option>
+                <option value="Cadena de tiempo"></option>
+                <option value="Cigueñal y biela"></option>
+                <option value="Discos de crochet / embrague"></option>
+
+                <!-- FRENOS -->
+                <option value="Pastillas de freno"></option>
+                <option value="Bandas de freno"></option>
+                <option value="Discos de freno"></option>
+                <option value="Bomba de freno"></option>
+                <option value="Guaya de freno"></option>
+
+                <!-- TRANSMISION / ARRASTRE -->
+                <option value="Kit de arrastre completo"></option>
+                <option value="Cadena reforzada"></option>
+                <option value="Pinon de ataque"></option>
+                <option value="Corona / Catalina"></option>
+                <option value="Gomas de impacto"></option>
+
+                <!-- ELECTRICIDAD Y ENCENDIDO -->
+                <option value="Bateria 12V"></option>
+                <option value="Bujia"></option>
+                <option value="CDI"></option>
+                <option value="Bobina de encendido"></option>
+                <option value="Stator / Plato de bobinas"></option>
+                <option value="Regulador de voltaje"></option>
+                <option value="Faro LED principal"></option>
+                <option value="Cocos / Bombillos LED"></option>
+                <option value="Brazos / Cocos de cruce"></option>
+                <option value="Suiche de encendido"></option>
+
+                <!-- ACCESORIOS Y CARROCERÍA -->
+                <option value="Cascos de proteccion"></option>
+                <option value="Guantes de manejo"></option>                        
+                <option value="Retrovisores / Espejos"></option>
+                <option value="Manubrio / Volante"></option>
+                <option value="Manillas de freno y embrague"></option>
+                <option value="Punos / Empunaduras"></option>
+                <option value="Amortiguadores traseros"></option>
+                <option value="Barras de suspension delantera"></option>
+                <option value="Tapa lateral / Tanque"></option>
+
+                <!-- LUBRICANTES Y MANTENIMIENTO -->
+                <option value="Aceite 20W50 mineral"></option>
+                <option value="Aceite 10W40 semi-sintetico"></option>
+                <option value="Filtro de aceite"></option>
+                <option value="Filtro de aire"></option>
+                <option value="Grasa para cadena"></option>
+            </datalist>
+        </div>
+    </header>
+    <main>
+        <!--Navegacion-->
+        <section>
+            <div id="tt-container" class="global-display">
+                
+            </div>
+        </section>
+        <section class="item-box">
+        </section>
+    </main>
+        <footer class="footer-web">
+        <div class="texto-inferior">
+            <svg width="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            <p>Lun/Dom de 7:30AM a 8:30PM |</p>
+        
+            <svg width="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17.6 6.31999C16.8669 5.58141 15.9943 4.99596 15.033 4.59767C14.0716 4.19938 13.0406 3.99622 12 3.99999C10.6089 4.00135 9.24248 4.36819 8.03771 5.06377C6.83294 5.75935 5.83208 6.75926 5.13534 7.96335C4.4386 9.16745 4.07046 10.5335 4.06776 11.9246C4.06507 13.3158 4.42793 14.6832 5.12 15.89L4 20L8.2 18.9C9.35975 19.5452 10.6629 19.8891 11.99 19.9C14.0997 19.9001 16.124 19.0668 17.6222 17.5816C19.1205 16.0965 19.9715 14.0796 19.99 11.97C19.983 10.9173 19.7682 9.87634 19.3581 8.9068C18.948 7.93725 18.3505 7.05819 17.6 6.31999ZM12 18.53C10.8177 18.5308 9.65701 18.213 8.64 17.61L8.4 17.46L5.91 18.12L6.57 15.69L6.41 15.44C5.55925 14.0667 5.24174 12.429 5.51762 10.8372C5.7935 9.24545 6.64361 7.81015 7.9069 6.80322C9.1702 5.79628 10.7589 5.28765 12.3721 5.37368C13.9853 5.4597 15.511 6.13441 16.66 7.26999C17.916 8.49818 18.635 10.1735 18.66 11.93C18.6442 13.6859 17.9355 15.3645 16.6882 16.6006C15.441 17.8366 13.756 18.5301 12 18.53ZM15.61 13.59C15.41 13.49 14.44 13.01 14.26 12.95C14.08 12.89 13.94 12.85 13.81 13.05C13.6144 13.3181 13.404 13.5751 13.18 13.82C13.07 13.96 12.95 13.97 12.75 13.82C11.6097 13.3694 10.6597 12.5394 10.06 11.47C9.85 11.12 10.26 11.14 10.64 10.39C10.6681 10.3359 10.6827 10.2759 10.6827 10.215C10.6827 10.1541 10.6681 10.0941 10.64 10.04C10.64 9.93999 10.19 8.95999 10.03 8.56999C9.87 8.17999 9.71 8.23999 9.58 8.22999H9.19C9.08895 8.23154 8.9894 8.25465 8.898 8.29776C8.8066 8.34087 8.72546 8.403 8.66 8.47999C8.43562 8.69817 8.26061 8.96191 8.14676 9.25343C8.03291 9.54495 7.98287 9.85749 8 10.17C8.0627 10.9181 8.34443 11.6311 8.81 12.22C9.6622 13.4958 10.8301 14.5293 12.2 15.22C12.9185 15.6394 13.7535 15.8148 14.58 15.72C14.8552 15.6654 15.1159 15.5535 15.345 15.3915C15.5742 15.2296 15.7667 15.0212 15.91 14.78C16.0428 14.4856 16.0846 14.1583 16.03 13.84C15.94 13.74 15.81 13.69 15.61 13.59Z" fill="#ffffff"></path> </g></svg>
+            <a href="#" class="texto-inferior">Contáctanos por Whatsapp |</a>
+
+            <p>© 2026 Inversiones Puertas del Cielo |</p>
+            
+            <svg width="30" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 9.96997H2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M5 18.9199H11" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M18 3.91992H6C3.79086 3.91992 2 5.71078 2 7.91992V17.9199C2 20.1291 3.79086 21.9199 6 21.9199H18C20.2091 21.9199 22 20.1291 22 17.9199V7.91992C22 5.71078 20.2091 3.91992 18 3.91992Z" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            <p>Pago Móvil / Tarjetas / Efectivo</p>
+        </div>
+        <a href="../index.html" class="texto-inferior-back">
+            <svg class="texto-inferior-back" width="30" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1 6V15H6V11C6 9.89543 6.89543 9 8 9C9.10457 9 10 9.89543 10 11V15H15V6L8 0L1 6Z" fill="#ffffff"></path> </g></svg></a>
+        </footer>
+    <script src="bar-script.js"></script>
+</body>
+</html>

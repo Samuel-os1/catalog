@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - Inversiones Puertas del Cielo</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; color: #333; }
+        h1 { text-align: center; color: #111111; }
+        .contenedor-resultados { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; max-width: 1000px; margin: 30px auto; }
+        .tarjeta-producto { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .tarjeta-producto img { max-width: 100%; height: 150px; object-fit: contain; margin-bottom: 10px; }
+        .tarjeta-producto h3 { font-size: 16px; margin: 10px 0; }
+        .tarjeta-producto p { font-weight: bold; color: #27ae60; font-size: 18px; }
+        .btn-comprar { background: #393939; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: bold; margin-top: 10px; }
+        .btn-comprar:hover { background: #7d7d7d; }
+        .volver { display: block; text-align: center; margin-top: 30px; color: #3498db; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <h1 id="titulo-busqueda">Resultados</h1>
+    
+    <div class="contenedor-resultados" id="gridResultados">
+    </div>
+
+    <a href="../index.html" class="btn-comprar">Volver al inicio</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const term = localStorage.getItem('terminoBusqueda') || '';
+            const resultadosJSON = localStorage.getItem('resultadosBusqueda');
+            
+            document.getElementById('titulo-busqueda').innerText = `Resultados para: "${term}"`;
+
+            const grid = document.getElementById('gridResultados');
+
+            if (!resultadosJSON) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No hay resultados guardados.</p>';
+                return;
+            }
+
+            const productos = JSON.parse(resultadosJSON);
+
+            if (productos.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No se encontraron productos.</p>';
+                return;
+            }
+
+            grid.innerHTML = '';
+
+            productos.forEach(prod => {
+                const nombre = prod.nombre || prod.Nombre || 'Sin nombre';
+                const grupo = prod.grupo || prod.Grupo || '';
+                const precio = prod.precio || prod.Precio || 'Consultar';
+                let imagen = prod.imagen || prod.Imagen || '../img/placeholder.png';
+                
+                if (!imagen.startsWith('http://') && !imagen.startsWith('https://')) {
+                    imagen = '../img/placeholder.png';
+                }
+
+                // Limpiar el precio para evitar dobles signos de dólar ($2$)
+                const precioLimpio = String(precio).replace(/\$/g, '').trim();
+
+                // Formatear el título inteligentemente para evitar guiones repetidos
+                let tituloFormateado = nombre;
+                if (grupo && grupo.trim() !== '' && !nombre.toLowerCase().includes(grupo.toLowerCase())) {
+                    tituloFormateado = `${grupo} - ${nombre}`;
+                }
+
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta-producto';
+                tarjeta.innerHTML = `
+                    <img src="${imagen}" alt="${nombre}">
+                    <div>
+                        <h3>${tituloFormateado}</h3>
+                        <p>$${precioLimpio}</p>
+                    </div>
+                    <a href="compra.html" class="btn-comprar" data-prod='${JSON.stringify({ titulo: tituloFormateado, precio: precioLimpio, imagen: imagen, variante: nombre })}'>Comprar</a>
+                `;
+
+                tarjeta.querySelector('.btn-comprar').addEventListener('click', (e) => {
+                    const datosProd = e.target.getAttribute('data-prod');
+                    localStorage.setItem('productoSeleccionado', datosProd);
+                });
+
+                grid.appendChild(tarjeta);
+            });
+        });
+    </script>
+</body>
+</html>
