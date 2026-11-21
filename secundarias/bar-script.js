@@ -2,14 +2,77 @@
 https://docs.google.com/spreadsheets/d/1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3vziw/edit?usp=sharing
 */
 
+//BUSCADOR GLOBAL
+
+const ID_SHEET_GLOBAL = '1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3vziw';
+const inputBuscadorGlobal = document.getElementById('srps');
+const iconoLupaGlobal = document.getElementById('mg-glass');
+
+function normalizarTextoGlobal(texto) {
+    if (!texto) return '';
+    return String(texto)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
+async function buscarEnInventarioGlobal() {
+    const busquedaRaw = inputBuscadorGlobal.value.trim();
+    if (!busquedaRaw) return;
+    const palabrasBuscadas = normalizarTextoGlobal(busquedaRaw).split(/\s+/);
+    const URL_INVENTARIO = `https://opensheet.elk.sh/${ID_SHEET_GLOBAL}/inventario`;
+    try {
+        const respuesta = await fetch(URL_INVENTARIO);
+        if (!respuesta.ok) throw new Error("Error al conectar con el inventario");
+        const productos = await respuesta.json();
+        const coincidencias = productos.filter(fila => {
+            const nombre = normalizarTextoGlobal(fila.nombre || fila.Nombre);
+            const grupo = normalizarTextoGlobal(fila.grupo || fila.Grupo);
+            const categoria = normalizarTextoGlobal(fila.categoria || fila.Categoria);
+            const textoCompleto = `${categoria} ${grupo} ${nombre}`;
+            const tokensTexto = textoCompleto.split(/[\s\/\-\.]+/);
+            return palabrasBuscadas.every(palabra => tokensTexto.includes(palabra));
+        });
+
+        if (coincidencias.length > 0) {
+            localStorage.setItem('resultadosBusqueda', JSON.stringify(coincidencias));
+            localStorage.setItem('terminoBusqueda', busquedaRaw);
+            window.location.href = 'catalogo.html';
+        } else {
+            alert(`No se encontró "${busquedaRaw}" en el inventario.`);
+        }
+    } catch (error) {
+        console.error('Error al consultar el inventario:', error);
+        alert('Ocurrió un error al consultar el inventario.');
+    }
+}
+if (inputBuscadorGlobal) {
+    inputBuscadorGlobal.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            buscarEnInventarioGlobal();
+        }
+    });
+}
+
+if (iconoLupaGlobal) {
+    iconoLupaGlobal.style.cursor = 'pointer';
+    iconoLupaGlobal.addEventListener('click', (e) => {
+        e.preventDefault();
+        buscarEnInventarioGlobal();
+    });
+}
+
+
+//CATALOGO LOCAL
+
 function iniciarCatalogo() {
     const ID_SHEET = '1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3vziw';
 
     const pestana = document.body.getAttribute('data-categoria');
     const contenedor = document.querySelector('.item-box');
-    const buscadorInput = document.querySelector('.nav-input');
+    const buscadorInput = document.getElementById('srps'); 
     const datalist = document.getElementById('sugerencias-busqueda');
-
     console.log('Pestaña detectada:', pestana);
     console.log('Contenedor .item-box:', contenedor);
 
@@ -30,45 +93,38 @@ function iniciarCatalogo() {
 
     fetch(URL_API)
         .then(respuesta => {
-        if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
-        return respuesta.json();
+            if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
+            return respuesta.json();
         })
         .then(datos => {
-        console.log('Datos recibidos de Google Sheets:', datos);
+            console.log('Datos recibidos de Google Sheets:', datos);
 
-        if (!Array.isArray(datos) || datos.length === 0) {
-            contenedor.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No hay productos en esta sección.</p>';
-            return;
-        }
+            if (!Array.isArray(datos) || datos.length === 0) {
+                contenedor.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No hay productos en esta sección.</p>';
+                return;
+            }
 
-        productosAgrupadosGlobal = agruparPorGrupo(datos);
+            productosAgrupadosGlobal = agruparPorGrupo(datos);
 
-        if (datalist) {
-            poblarDatalist(productosAgrupadosGlobal, datalist);
-        }
+            if (datalist) {
+                poblarDatalist(productosAgrupadosGlobal, datalist);
+            }
 
-        renderizarTarjetas(productosAgrupadosGlobal, contenedor);
-
-        if (buscadorInput) {
-            buscadorInput.addEventListener('input', (e) => {
-            const termino = e.target.value.toLowerCase().trim();
-            filtrarProductos(termino, productosAgrupadosGlobal, contenedor);
-            });
-        }
+            renderizarTarjetas(productosAgrupadosGlobal, contenedor);
         })
         .catch(error => {
-        console.error('Error al consultar OpenSheet:', error);
-        contenedor.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error al cargar datos. Verifica la conexión.</p>';
+            console.error('Error al consultar OpenSheet:', error);
+            contenedor.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error al cargar datos. Verifica la conexión.</p>';
         });
-    }
+}
 
-    if (document.readyState === 'loading') {
+if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', iniciarCatalogo);
-    } else {
+} else {
     iniciarCatalogo();
-    }
+}
 
-    function agruparPorGrupo(filas) {
+function agruparPorGrupo(filas) {
     const grupos = {};
 
     filas.forEach(fila => {
@@ -77,45 +133,52 @@ function iniciarCatalogo() {
         const llaveGrupo = fila.grupo && fila.grupo.trim() !== '' ? fila.grupo.trim() : fila.nombre.trim();
 
         if (!grupos[llaveGrupo]) {
-        grupos[llaveGrupo] = [];
+            grupos[llaveGrupo] = [];
         }
 
         let rutaImagen = fila.imagen ? fila.imagen.trim() : '';
-        if (rutaImagen && !rutaImagen.startsWith('http') && !rutaImagen.startsWith('../')) {
-        rutaImagen = '../' + rutaImagen;
+
+        if (rutaImagen) {
+            rutaImagen = rutaImagen.replace(/["']/g, '/');
+            rutaImagen = rutaImagen.replace(/\\/g, '/');
+            rutaImagen = rutaImagen.replace(/^catalog-main\//i, '');
+        }
+
+        if (!rutaImagen.startsWith('http') && !rutaImagen.startsWith('/')) {
+            rutaImagen = '/' + rutaImagen;
         }
 
         const valorPrecio = fila.precio ? fila.precio.trim() : '';
         let htmlPrecio = '';
         
-        if(valorPrecio.toLowerCase() === 'agotado') {
-            htmlPrecio = '<span class="texto-agotado">Agotado</span>'
-        } else if (valorPrecio !== ''){
+        if (valorPrecio.toLowerCase() === 'agotado') {
+            htmlPrecio = '<span class="texto-agotado">Agotado</span>';
+        } else if (valorPrecio !== '') {
             htmlPrecio = valorPrecio;
         } else {
-            '<a href="compra.html" class="consult-boton">Consultar</a>'
+            htmlPrecio = '<a href="compra.html" class="consult-boton">Consultar</a>';
         }
 
         grupos[llaveGrupo].push({
-        nombre: fila.nombre,
-        precio: fila.precio || '<a href="compra.html" class="consult-boton">Consultar</a>',
-        imagen: rutaImagen || '../img/placeholder.png'
+            nombre: fila.nombre,
+            precio: fila.precio || '<a href="compra.html" class="consult-boton">Consultar</a>',
+            imagen: rutaImagen || '../img/placeholder.png'
         });
     });
 
     return grupos;
-    }
+}
 
-    function poblarDatalist(grupos, datalistElement) {
+function poblarDatalist(grupos, datalistElement) {
     datalistElement.innerHTML = '';
     Object.keys(grupos).forEach(nombre => {
         const option = document.createElement('option');
         option.value = nombre;
         datalistElement.appendChild(option);
     });
-    }
+}
 
-    function filtrarProductos(termino, grupos, contenedor) {
+function filtrarProductos(termino, grupos, contenedor) {
     if (!termino) {
         renderizarTarjetas(grupos, contenedor);
         return;
@@ -129,14 +192,14 @@ function iniciarCatalogo() {
         const variantesCoincidentes = variantes.filter(v => v.nombre.toLowerCase().includes(termino));
 
         if (coincideGrupo || variantesCoincidentes.length > 0) {
-        gruposFiltrados[nombreGrupo] = variantes;
+            gruposFiltrados[nombreGrupo] = variantes;
         }
     });
 
     renderizarTarjetas(gruposFiltrados, contenedor);
-    }
+}
 
-    function renderizarTarjetas(grupos, contenedor) {
+function renderizarTarjetas(grupos, contenedor) {
     contenedor.innerHTML = '';
 
     const nombresGrupos = Object.keys(grupos);
@@ -155,20 +218,20 @@ function iniciarCatalogo() {
 
         let selectHTML = '';
         if (variantes.length > 1) {
-        const opciones = variantes.map((v, index) => 
-            `<option value="${index}">${v.nombre}</option>`
-        ).join('');
+            const opciones = variantes.map((v, index) => 
+                `<option value="${index}">${v.nombre}</option>`
+            ).join('');
 
-        selectHTML = `
-            <div class="contenedor-select">
-            <label class="label-variante">Modelo / Medida:</label>
-            <select class="select-variante">
-                ${opciones}
-            </select>
-            </div>
-        `;
+            selectHTML = `
+                <div class="contenedor-select">
+                <label class="label-variante">Modelo / Medida:</label>
+                <select class="select-variante">
+                    ${opciones}
+                </select>
+                </div>
+            `;
         } else {
-        selectHTML = `<p class="nombre-unico">${primeraVariante.nombre}</p>`;
+            selectHTML = `<p class="nombre-unico">${primeraVariante.nombre}</p>`;
         }
 
         tarjeta.innerHTML = `
@@ -184,23 +247,23 @@ function iniciarCatalogo() {
 
         const select = tarjeta.querySelector('.select-variante');
         if (select) {
-        select.addEventListener('change', (e) => {
-            const index = e.target.value;
-            const varianteSeleccionada = variantes[index];
-            
-            const img = tarjeta.querySelector('.img-producto');
-            const precio = tarjeta.querySelector('.precio-producto');
+            select.addEventListener('change', (e) => {
+                const index = e.target.value;
+                const varianteSeleccionada = variantes[index];
+                
+                const img = tarjeta.querySelector('.img-producto');
+                const precio = tarjeta.querySelector('.precio-producto');
 
-            img.src = varianteSeleccionada.imagen;
-            precio.innerHTML = varianteSeleccionada.precio;
-        });
+                img.src = varianteSeleccionada.imagen;
+                precio.innerHTML = varianteSeleccionada.precio;
+            });
         }
 
         contenedor.appendChild(tarjeta);
     });
 }
 
-// ====LOCAL STORAGE==== //
+//LOCAL STORAGE
 
 document.addEventListener('click', (e) => {
     const btnConsultar = e.target.closest('.consult-boton') || e.target.closest('.precio-producto');
@@ -241,21 +304,23 @@ document.addEventListener('click', (e) => {
 
     const datosProducto = {
         titulo: nombreCompleto,
-        variante: variante,
         precio: precio,
-        imagen: imagen
+        imagen: imagen,
+        variante: variante
     };
 
     localStorage.removeItem('productoSeleccionado');
-
     localStorage.setItem('productoSeleccionado', JSON.stringify(datosProducto));
 
     const urlNombre = encodeURIComponent(nombreCompleto);
     const urlPrecio = encodeURIComponent(precio);
-    window.location.href = `compra.html?nombre=${urlNombre}&precio=${urlPrecio}`;
+    const urlImagen = encodeURIComponent(imagen);
+    const urlVariante = encodeURIComponent(variante);
+    
+    window.location.href = `compra.html?nombre=${urlNombre}&precio=${urlPrecio}&imagen=${urlImagen}&variante=${urlVariante}`;
 });
 
-/* CONSULTA */
+//CONSULTA
 
 const urlParams = new URLSearchParams(window.location.search);
 const btnWhatsapp = document.getElementById('btn-whatsapp');
