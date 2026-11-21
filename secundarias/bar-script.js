@@ -2,6 +2,11 @@
 https://docs.google.com/spreadsheets/d/1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3vziw/edit?usp=sharing
 */
 
+const estaEnSubcarpeta = window.location.pathname.includes('/secundarias/');
+const rutaCatalogo = estaEnSubcarpeta ? '../catalogo.html' : 'catalogo.html';
+const rutaCompra = estaEnSubcarpeta ? '../compra.html' : 'compra.html';
+const rutaPlaceholder = estaEnSubcarpeta ? '../img/placeholder.png' : 'img/placeholder.png';
+
 //BUSCADOR GLOBAL
 
 const ID_SHEET_GLOBAL = '1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3vziw';
@@ -37,7 +42,7 @@ async function buscarEnInventarioGlobal() {
         if (coincidencias.length > 0) {
             localStorage.setItem('resultadosBusqueda', JSON.stringify(coincidencias));
             localStorage.setItem('terminoBusqueda', busquedaRaw);
-            window.location.href = 'catalogo.html';
+            window.location.href = rutaCatalogo;
         } else {
             alert(`No se encontró "${busquedaRaw}" en el inventario.`);
         }
@@ -144,8 +149,11 @@ function agruparPorGrupo(filas) {
             rutaImagen = rutaImagen.replace(/^catalog-main\//i, '');
         }
 
-        if (!rutaImagen.startsWith('http') && !rutaImagen.startsWith('/')) {
-            rutaImagen = '/' + rutaImagen;
+        if (rutaImagen && !rutaImagen.startsWith('http')) {
+            rutaImagen = rutaImagen.replace(/^\/+/, '');
+            if (estaEnSubcarpeta && !rutaImagen.startsWith('../')) {
+                rutaImagen = '../' + rutaImagen;
+            }
         }
 
         const valorPrecio = fila.precio ? fila.precio.trim() : '';
@@ -156,13 +164,13 @@ function agruparPorGrupo(filas) {
         } else if (valorPrecio !== '') {
             htmlPrecio = valorPrecio;
         } else {
-            htmlPrecio = '<a href="compra.html" class="consult-boton">Consultar</a>';
+            htmlPrecio = `<a href="${rutaCompra}" class="consult-boton">Consultar</a>`;
         }
 
         grupos[llaveGrupo].push({
             nombre: fila.nombre,
-            precio: fila.precio || '<a href="compra.html" class="consult-boton">Consultar</a>',
-            imagen: rutaImagen || '../img/placeholder.png'
+            precio: fila.precio || `<a href="${rutaCompra}" class="consult-boton">Consultar</a>`,
+            imagen: rutaImagen || rutaPlaceholder
         });
     });
 
@@ -236,13 +244,13 @@ function renderizarTarjetas(grupos, contenedor) {
 
         tarjeta.innerHTML = `
         <div class="contenedor-img">
-            <img class="img-producto" src="${primeraVariante.imagen}" alt="${nombreGrupo}" loading="lazy" onerror="this.src='../img/placeholder.png'">
+            <img class="img-producto" src="${primeraVariante.imagen}" alt="${nombreGrupo}" loading="lazy" onerror="this.src='${rutaPlaceholder}'">
         </div>
         <h3 class="titulo-producto">${nombreGrupo}</h3>
         
         ${selectHTML}
 
-        <a href="compra.html"><div class="precio-producto">${primeraVariante.precio}</div></a>
+        <a href="${rutaCompra}"><div class="precio-producto">${primeraVariante.precio}</div></a>
         `;
 
         const select = tarjeta.querySelector('.select-variante');
@@ -317,7 +325,7 @@ document.addEventListener('click', (e) => {
     const urlImagen = encodeURIComponent(imagen);
     const urlVariante = encodeURIComponent(variante);
     
-    window.location.href = `compra.html?nombre=${urlNombre}&precio=${urlPrecio}&imagen=${urlImagen}&variante=${urlVariante}`;
+    window.location.href = `${rutaCompra}?nombre=${urlNombre}&precio=${urlPrecio}&imagen=${urlImagen}&variante=${urlVariante}`;
 });
 
 //CONSULTA
