@@ -3,9 +3,9 @@ https://docs.google.com/spreadsheets/d/1OwhKL8HTq9lMBLLzk6NMrXO2BY4UmtlksP7pOU3v
 */
 
 const estaEnSubcarpeta = window.location.pathname.includes('/secundarias/');
-const rutaCatalogo = estaEnSubcarpeta ? '../catalogo.html' : 'catalogo.html';
-const rutaCompra = estaEnSubcarpeta ? '../compra.html' : 'compra.html';
-const rutaPlaceholder = estaEnSubcarpeta ? '../img/placeholder.png' : 'img/placeholder.png';
+const rutaCatalogo = 'catalogo.html';
+const rutaCompra = 'compra.html';
+const rutaPlaceholder = 'img/placeholder.png';
 
 //BUSCADOR GLOBAL
 
